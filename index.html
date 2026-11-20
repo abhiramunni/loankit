@@ -432,4 +432,49 @@ footer{padding:26px 0 46px}
     </div>
   </div>
 </section>
+<section id="guides" class="wrap reveal">
+  <div class="sec-head">
+    <div><h2>Six things nobody explains</h2><p>Tap any card. Each one takes thirty seconds and can save you real money.</p></div>
+  </div>
+  <details class="guide"><summary>How is an EMI actually calculated?<span class="chev">&#8250;</span></summary><div class="g-body">Your EMI comes from three numbers only: how much you borrow, the <b>reducing-balance</b> interest rate, and the number of months. Interest is charged each month on the balance that is still unpaid — so as you repay, the interest part of your EMI shrinks and the principal part grows. That is why the same EMI in year 1 is mostly interest, and in the last year is almost all principal.</div></details>
+  <details class="guide"><summary>Reducing balance vs flat rate — the trap<span class="chev">&#8250;</span></summary><div class="g-body">A "flat rate" sounds lower but is not. On a flat rate, interest is charged on the <b>full original amount</b> for the whole tenure — even in the last month, when you owe almost nothing. A flat 10% is roughly equal to a reducing rate of about 18%. Always ask: <b>"Is this reducing balance?"</b> If the answer is not a clear yes, walk away.</div></details>
+  <details class="guide"><summary>Moratorium: the interest never sleeps<span class="chev">&#8250;</span></summary><div class="g-body">During the course and the 6–12 months after it, education loans ask for no EMI. But interest keeps compounding on the full loan. Two quiet years can add <b>&#8377;3 lakh</b> to a &#8377;15 lakh loan. The fix is simple: if your family can manage it, pay the monthly interest (about &#8377;11,900 here) during the course. Your future self will be very grateful.</div></details>
+  <details class="guide"><summary>Prepayment and part-payment<span class="chev">&#8250;</span></summary><div class="g-body">Paying extra — even &#8377;2,000 a month — cuts the loan's life by years, because every extra rupee goes straight to principal. Floating-rate home and education loans in India usually allow this free of charge; fixed-rate loans and personal loans may charge 0–2%. Always prepay <b>early</b>: the same &#8377;50,000 saves far more in year 1 than in year 8.</div></details>
+  <details class="guide"><summary>Collateral vs unsecured loans<span class="chev">&#8250;</span></summary><div class="g-body">Loans up to &#8377;7.5 lakh for study in India (&#8377;4 lakh for some banks) often need no collateral — just a co-applicant, usually a parent. Above that, banks ask for property or a fixed deposit as security, and in return the rate is usually 1–2% lower. Unsecured loans from NBFCs are faster and need no property, but cost more. Weigh the rate against the risk of pledging the family home.</div></details>
+  <details class="guide"><summary>Fees nobody tells you about<span class="chev">&#8250;</span></summary><div class="g-body">Beyond the rate, check five things: the <b>processing fee</b> (0.5–1% of the loan), <b>foreclosure charges</b> (0–2% if you close early), <b>late-payment penalties</b> (usually 2% a month on the overdue EMI), <b>insurance</b> bundled into the loan (optional — you can say no), and <b>documentation charges</b>. A "low rate" with heavy fees can cost more than a slightly higher rate with none.</div></details>
+</section>
+
+<footer class="wrap">
+  <div class="foot-grid">
+    <div class="card" style="padding:20px">
+      <h3 style="font-size:18px">Take your numbers with you</h3>
+      <p class="muted small" style="margin:6px 0 14px">Copy a plain-words summary of your loan — handy for the family discussion or the bank visit.</p>
+      <button type="button" class="btn bronze" id="copyBtn">Copy my loan summary</button>
+    </div>
+    <div class="card" style="padding:20px">
+      <h3 style="font-size:18px">Your data stays yours</h3>
+      <p class="muted small" style="margin:6px 0 14px">Everything is saved only in this browser. No account, no server, nothing uploaded.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <button type="button" class="btn ghost small" id="removeSamples">Remove sample loans</button>
+        <button type="button" class="danger" id="eraseAll">Erase everything</button>
+      </div>
+    </div>
+  </div>
+  <p class="tiny" style="text-align:center;margin-top:22px">LoanKit is a planning tool, not financial advice. Rates shown are indicative — your lender's offer is the only number that counts. Built for planning, on your device.</p>
+</footer>
+</main>
+
+<div id="coach" role="dialog" aria-label="Quick tour">
+  <div class="coach-card">
+    <div class="step" id="coachStep">STEP 1 OF 3</div>
+    <h3 id="coachTitle">First, build your loan</h3>
+    <p id="coachText">Drag the amount, rate and tenure sliders. The EMI, the interest and the payoff date update instantly.</p>
+    <div class="coach-dots"><i class="on"></i><i></i><i></i></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="btn ghost small" id="coachSkip">Skip tour</button>
+      <button type="button" class="btn bronze small" id="coachNext">Next</button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status"></div>
 <!-- @@NEXT@@ -->
