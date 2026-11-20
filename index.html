@@ -356,4 +356,23 @@ footer{padding:26px 0 46px}
     <p class="small muted" style="margin-top:16px">Before you prepay, check the fine print: some lenders charge a foreclosure fee (usually 0–2%) and some fixed-rate loans restrict part-payments. Floating-rate home and education loans in India generally allow prepayment with no penalty — confirm with your lender.</p>
   </div>
 </section>
+<section id="compare" class="wrap reveal">
+  <div class="sec-head">
+    <div><h2>Compare your options</h2><p>Three loans, side by side. The cheapest EMI is rarely the cheapest loan — look at the interest column.</p></div>
+  </div>
+  <div class="scn-grid" id="scnGrid"></div>
+  <div class="card" style="padding:20px;margin-top:16px">
+    <h3 style="font-size:18px;margin-bottom:14px">Add your own scenario</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" class="scn-form">
+      <div class="field" style="margin:0"><label for="scnName">Name</label><input id="scnName" type="text" placeholder="e.g. SBI education loan" maxlength="40"></div>
+      <div class="field" style="margin:0"><label for="scnAmt">Amount (&#8377;)</label><input id="scnAmt" type="number" min="10000" step="10000" placeholder="1500000" inputmode="numeric"></div>
+      <div class="field" style="margin:0"><label for="scnRate">Rate (% / year)</label><input id="scnRate" type="number" min="5" max="24" step="0.05" placeholder="9.5" inputmode="decimal"></div>
+      <div class="field" style="margin:0"><label for="scnYrs">Tenure (years)</label><input id="scnYrs" type="number" min="1" max="30" step="1" placeholder="10" inputmode="numeric"></div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button type="button" class="btn bronze" id="addScn">Add scenario</button>
+      <span class="tiny" id="scnMsg" style="align-self:center"></span>
+    </div>
+  </div>
+</section>
 <!-- @@NEXT@@ -->
