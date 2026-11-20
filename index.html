@@ -331,4 +331,29 @@ footer{padding:26px 0 46px}
   </div>
   <p class="small muted" style="margin-top:12px">Tip: the interest column is biggest in year 1. Any extra payment in year 1 saves more than the same payment in year 8 — try it below.</p>
 </section>
+<section id="prepay" class="wrap reveal">
+  <div class="sec-head">
+    <div><h2>The prepayment lever</h2><p>Pay a little extra every month and the loan collapses years early. This is the single most powerful move in this whole app.</p></div>
+    <span class="pill terra">Try &#8377;5,000 extra</span>
+  </div>
+  <div class="card" style="padding:22px">
+    <div class="slider-row" style="border-bottom:0;padding-top:0">
+      <div class="lab"><span>Extra payment every month</span><output id="extraOut">&#8377;5,000</output></div>
+      <input type="range" id="extraRange" min="0" max="20000" step="500" value="5000" aria-label="Extra monthly payment">
+      <div class="hint">Even &#8377;2,000 extra a month saves over &#8377;1.3 lakh on this loan. Start small — consistency beats size.</div>
+    </div>
+    <div class="prepay-nums">
+      <div class="stat"><div class="k">Debt-free</div><div class="v num" id="ppMonths">35 months early</div><div class="d" id="ppDate">Jan 2034 instead of Dec 2036</div></div>
+      <div class="stat"><div class="k">Interest saved</div><div class="v num" id="ppSave">&#8377;2,66,029</div><div class="d">money that stays in your pocket</div></div>
+      <div class="stat"><div class="k">New tenure</div><div class="v num" id="ppTenure">7 yrs 1 mo</div><div class="d" id="ppEmiNote">EMI stays &#8377;19,410 + &#8377;5,000 extra</div></div>
+    </div>
+    <div style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:6px"><span>Total interest — no prepayment</span><span class="num" id="ppOld">&#8377;8,29,156</span></div>
+      <div class="bar-track" style="margin-bottom:14px"><i style="background:#c05b2e;width:100%"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:6px"><span>Total interest — with prepayment</span><span class="num" id="ppNew">&#8377;5,63,127</span></div>
+      <div class="bar-track"><i id="ppBar" style="background:#4a7a3f;width:68%"></i></div>
+    </div>
+    <p class="small muted" style="margin-top:16px">Before you prepay, check the fine print: some lenders charge a foreclosure fee (usually 0–2%) and some fixed-rate loans restrict part-payments. Floating-rate home and education loans in India generally allow prepayment with no penalty — confirm with your lender.</p>
+  </div>
+</section>
 <!-- @@NEXT@@ -->
