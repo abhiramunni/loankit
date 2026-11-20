@@ -477,4 +477,80 @@ footer{padding:26px 0 46px}
   </div>
 </div>
 <div id="toast" role="status"></div>
-<!-- @@NEXT@@ -->
+<script>
+(function(){
+"use strict";
+var KEY="loankit_v1";
+var PRESETS={
+  education:{label:"Education loan",amount:1500000,rate:9.5,years:10},
+  home:{label:"Home loan",amount:4000000,rate:8.75,years:20},
+  car:{label:"Car loan",amount:800000,rate:9.25,years:5},
+  personal:{label:"Personal loan",amount:300000,rate:12.5,years:3}
+};
+var DOCS=["Offer letter / admission letter from the university","Co-applicant KYC — PAN + Aadhaar (parent)","Income proof of co-applicant (salary slips / ITR)","Bank statements — last 6 months","Academic records — mark sheets + degree","Passport + visa (for study abroad)","Collateral papers — property documents (if pledging)","Fee structure from the university"];
+var DEFAULTS={
+  seen:false, coached:false, type:"education",
+  loan:{amount:1500000,rate:9.5,years:10,start:"2027-01"},
+  extra:5000, income:60000, showAllYears:false,
+  scenarios:[
+    {id:"s1",name:"Education — Italy, Padua",amount:1500000,rate:9.5,years:10,sample:true},
+    {id:"s2",name:"Car — new hatchback",amount:800000,rate:9.25,years:5,sample:true},
+    {id:"s3",name:"Personal — laptop + setup",amount:300000,rate:12.5,years:3,sample:true}
+  ],
+  docs:{}
+};
+var state=load();
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(!raw) return JSON.parse(JSON.stringify(DEFAULTS));
+    var s=JSON.parse(raw);
+    if(!s.loan||!s.scenarios) return JSON.parse(JSON.stringify(DEFAULTS));
+    return s;
+  }catch(e){ return JSON.parse(JSON.stringify(DEFAULTS)); }
+}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+window.LoanKit={state:state,emi:emi,amortise:amortise,inr:inr,addMonths:addMonths,fmtMonths:fmtMonths,PRESETS:PRESETS,DOCS:DOCS};
+
+/* ---------- formatting & maths ---------- */
+function inr(n){ n=Math.round(n); return "\u20B9"+n.toLocaleString("en-IN"); }
+function inrShort(n){ if(n>=10000000) return "\u20B9"+(n/10000000).toFixed(2).replace(/\.00$/,"")+" Cr"; if(n>=100000) return "\u20B9"+(n/100000).toFixed(1).replace(/\.0$/,"")+" L"; return inr(n); }
+function emi(P,annualRate,months){
+  if(months<=0) return 0;
+  var i=annualRate/1200;
+  if(i===0) return P/months;
+  var f=Math.pow(1+i,months);
+  return P*i*f/(f-1);
+}
+function amortise(P,annualRate,months,extra){
+  extra=extra||0;
+  var i=annualRate/1200, base=emi(P,annualRate,months), bal=P, totalInt=0, totalPaid=0, m=0, years=[];
+  while(bal>0.005 && m<600){
+    var y=Math.floor(m/12)+1;
+    if(!years[y-1]) years[y-1]={year:y,paid:0,prin:0,int:0,bal:0};
+    var it=bal*i, pay=base+extra;
+    if(pay>bal+it) pay=bal+it;
+    var pr=pay-it;
+    bal=bal-pr; totalInt+=it; totalPaid+=pay; m++;
+    years[y-1].paid+=pay; years[y-1].prin+=pr; years[y-1].int+=it; years[y-1].bal=Math.max(0,bal);
+  }
+  return {months:m,totalInterest:totalInt,totalPaid:totalPaid,years:years};
+}
+function addMonths(ym,months){
+  var p=ym.split("-"), y=+p[0], m=+p[1]-1;
+  var d=new Date(y,m+months,1);
+  return d.toLocaleString("en-IN",{month:"short",year:"numeric"});
+}
+function fmtMonths(m){
+  var y=Math.floor(m/12), mo=m%12;
+  if(y===0) return mo+" mo";
+  return y+" yr"+(y>1?"s":"")+(mo?" "+mo+" mo":"");
+}
+function $(id){ return document.getElementById(id); }
+function safeScroll(el){ try{ if(el&&el.scrollIntoView) el.scrollIntoView({behavior:"smooth",block:"nearest"}); }catch(e){} }
+function toast(msg){
+  var t=$("toast"); if(!t) return;
+  t.textContent=msg; t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); },2600);
+}
+/* @@NEXT@@ */
