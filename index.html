@@ -93,10 +93,6 @@ nav a:hover{background:var(--paper2);color:var(--ink)}
 .stat .k{font-size:11.5px;letter-spacing:.1em;font-weight:800;color:var(--ink3);text-transform:uppercase}
 .stat .v{font-size:19px;font-weight:800;margin-top:3px}
 .stat .d{font-size:12.5px;color:var(--ink2)}
-/* @@NEXT@@ */
-</style>
-</head>
-<body>
 /* ---------- sliders & calculator ---------- */
 .calc-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
 .slider-row{padding:16px 0;border-bottom:1px solid var(--line)}
@@ -557,7 +553,7 @@ function toast(msg){
   t.textContent=msg; t.classList.add("show");
   setTimeout(function(){ t.classList.remove("show"); },2600);
 }
-/* @@NEXT@@ */
+
 
 /* ---------- renderers ---------- */
 function cur(){ return state.loan; }
@@ -725,7 +721,7 @@ function renderDocs(){
   });
 }
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
-/* @@NEXT@@ */
+
 
 /* ---------- interactions ---------- */
 function syncInputs(){
