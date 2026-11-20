@@ -719,4 +719,115 @@ function renderDocs(){
   });
 }
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
-/* @@NEXT@@ */
+/* ---------- interactions ---------- */
+function syncInputs(){
+  $("amtRange").value=state.loan.amount;
+  $("rateRange").value=state.loan.rate;
+  $("yrsRange").value=state.loan.years;
+  $("startMonth").value=state.loan.start;
+  $("incomeQuick").value=state.income;
+  $("extraRange").value=state.extra;
+}
+function bind(){
+  $("amtRange").addEventListener("input",function(){ state.loan.amount=+this.value; save(); renderAll(); });
+  $("rateRange").addEventListener("input",function(){ state.loan.rate=+this.value; save(); renderAll(); });
+  $("yrsRange").addEventListener("input",function(){ state.loan.years=+this.value; save(); renderAll(); });
+  $("extraRange").addEventListener("input",function(){ state.extra=+this.value; save(); renderAll(); });
+  $("startMonth").addEventListener("change",function(){ if(this.value){ state.loan.start=this.value; save(); renderAll(); } });
+  $("incomeQuick").addEventListener("input",function(){ state.income=Math.max(0,+this.value||0); save(); renderAll(); });
+  $("toggleYears").addEventListener("click",function(){ state.showAllYears=!state.showAllYears; save(); renderAll(); });
+  $("typeChips").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-type]"); if(!b) return;
+    var p=PRESETS[b.getAttribute("data-type")]; if(!p) return;
+    state.type=b.getAttribute("data-type");
+    state.loan.amount=p.amount; state.loan.rate=p.rate; state.loan.years=p.years;
+    document.querySelectorAll("#typeChips .chip").forEach(function(c){ c.classList.toggle("on",c===b); });
+    syncInputs(); save(); renderAll();
+    toast(p.label+" preset loaded");
+  });
+  $("addScn").addEventListener("click",function(){
+    var name=$("scnName").value.trim(), amt=+ $("scnAmt").value, rate=+$("scnRate").value, yrs=+$("scnYrs").value;
+    var msg=$("scnMsg");
+    if(!name||!amt||!rate||!yrs){ msg.textContent="Fill all four fields first."; return; }
+    if(amt<10000||rate<1||rate>30||yrs<1||yrs>30){ msg.textContent="Check the numbers — amount \u2265 \u20B910,000, rate 1–30%, tenure 1–30 years."; return; }
+    state.scenarios.push({id:"s"+Date.now(),name:name,amount:amt,rate:rate,years:yrs,sample:false});
+    $("scnName").value=""; $("scnAmt").value=""; $("scnRate").value=""; $("scnYrs").value="";
+    msg.textContent=""; save(); renderCompare(); toast("Scenario added");
+  });
+  $("copyBtn").addEventListener("click",function(){
+    var L=cur(), months=L.years*12, e=emi(L.amount,L.rate,months);
+    var sched=amortise(L.amount,L.rate,months,0);
+    var pp=amortise(L.amount,L.rate,months,state.extra);
+    var txt="My loan, in plain words (LoanKit)\n"+
+      "Amount: "+inr(L.amount)+" at "+L.rate+"% for "+L.years+" years\n"+
+      "EMI: "+inr(e)+" / month \u00B7 Total repaid: "+inr(sched.totalPaid)+"\n"+
+      "Interest alone: "+inr(sched.totalInterest)+" ("+Math.round(sched.totalInterest/sched.totalPaid*100)+"% of what I pay)\n"+
+      "Debt-free: "+addMonths(L.start,months-1)+"\n"+
+      "With "+inr(state.extra)+"/month extra: debt-free "+addMonths(L.start,pp.months-1)+", saves "+inr(Math.max(0,sched.totalInterest-pp.totalInterest))+" interest.";
+    copyText(txt);
+  });
+  $("removeSamples").addEventListener("click",function(){
+    var before=state.scenarios.length;
+    state.scenarios=state.scenarios.filter(function(s){return !s.sample;});
+    save(); renderCompare();
+    toast(before-state.scenarios.length>0?"Sample loans removed":"No sample loans left");
+  });
+  var eraseArmed=false;
+  $("eraseAll").addEventListener("click",function(){
+    if(!eraseArmed){ eraseArmed=true; this.textContent="Tap again to erase everything"; setTimeout(function(){ eraseArmed=false; $("eraseAll").textContent="Erase everything"; },4000); return; }
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.reload();
+  });
+  /* coach */
+  var steps=[
+    {t:"First, build your loan",x:"Drag the amount, rate and tenure sliders. The EMI, the interest and the payoff date update instantly."},
+    {t:"Then, find the hidden cost",x:"Scroll to the breakdown — the donut shows how much of your money is interest, and the chart shows when the balance finally flips."},
+    {t:"Finally, pull the prepay lever",x:"Add a small extra payment every month and watch years of interest disappear. That is the whole trick."}
+  ], ci=0;
+  function showStep(){
+    $("coachStep").textContent="STEP "+(ci+1)+" OF 3";
+    $("coachTitle").textContent=steps[ci].t;
+    $("coachText").textContent=steps[ci].x;
+    document.querySelectorAll(".coach-dots i").forEach(function(d,i){ d.classList.toggle("on",i===ci); });
+    $("coachNext").textContent=ci===2?"Start using LoanKit":"Next";
+  }
+  $("coachNext").addEventListener("click",function(){
+    if(ci<2){ ci++; showStep(); }
+    else { $("coach").classList.remove("show"); state.coached=true; save(); }
+  });
+  $("coachSkip").addEventListener("click",function(){ $("coach").classList.remove("show"); state.coached=true; save(); });
+  if(!state.coached){ setTimeout(function(){ showStep(); $("coach").classList.add("show"); },5200); }
+  /* reveal on scroll */
+  var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+  },{threshold:.12}):null;
+  document.querySelectorAll(".reveal").forEach(function(el){
+    if(io) io.observe(el); else el.classList.add("in");
+  });
+  /* intro */
+  var intro=$("intro");
+  function dismissIntro(){ intro.classList.add("hide"); setTimeout(function(){ intro.remove(); },700); }
+  $("introSkip").addEventListener("click",dismissIntro);
+  intro.addEventListener("click",function(ev){ if(ev.target===intro) dismissIntro(); });
+  var delay=state.seen?900:3900;
+  setTimeout(dismissIntro,delay);
+  state.seen=true; save();
+}
+function copyText(txt){
+  function done(){ toast("Summary copied — paste it anywhere"); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,function(){ fallback(); });
+  } else fallback();
+  function fallback(){
+    var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand("copy"); done(); }catch(e){ toast("Copy failed — select the text manually"); }
+    document.body.removeChild(ta);
+  }
+}
+syncInputs();
+bind();
+renderAll();
+})();
+</script>
+</body>
+</html>
