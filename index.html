@@ -318,4 +318,17 @@ footer{padding:26px 0 46px}
     </div>
   </div>
 </section>
+<section class="wrap reveal">
+  <div class="sec-head">
+    <div><h2>Your repayment schedule</h2><p>One row per year. The balance column is what you still owe on 31 December of that year.</p></div>
+    <button type="button" class="btn ghost small" id="toggleYears">Show all years</button>
+  </div>
+  <div class="card" style="overflow-x:auto">
+    <table class="ledger">
+      <thead><tr><th>Year</th><th class="r">EMI paid</th><th class="r">Principal</th><th class="r">Interest</th><th class="r">Balance left</th></tr></thead>
+      <tbody id="amortBody"></tbody>
+    </table>
+  </div>
+  <p class="small muted" style="margin-top:12px">Tip: the interest column is biggest in year 1. Any extra payment in year 1 saves more than the same payment in year 8 — try it below.</p>
+</section>
 <!-- @@NEXT@@ -->
