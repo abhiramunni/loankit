@@ -285,4 +285,37 @@ footer{padding:26px 0 46px}
     </div>
   </div>
 </section>
+<section id="breakdown" class="wrap reveal">
+  <div class="sec-head">
+    <div><h2>Where your money actually goes</h2><p>Early EMIs are mostly interest. Watch the balance flip as the years pass — that flip is why prepaying early matters so much.</p></div>
+  </div>
+  <div class="split">
+    <div class="card" style="padding:22px">
+      <h3 style="font-size:19px;margin-bottom:14px">Principal vs interest</h3>
+      <div class="donut-wrap">
+        <svg width="170" height="170" viewBox="0 0 170 170" role="img" aria-label="Donut chart of principal versus interest">
+          <circle cx="85" cy="85" r="66" fill="none" stroke="#eadfc6" stroke-width="26"/>
+          <circle id="donutInt" cx="85" cy="85" r="66" fill="none" stroke="#c05b2e" stroke-width="26" stroke-dasharray="414.7" stroke-dashoffset="0" transform="rotate(-90 85 85)"/>
+          <text x="85" y="80" text-anchor="middle" font-size="15" font-weight="700" fill="#2b1d12" id="donutPct">36%</text>
+          <text x="85" y="100" text-anchor="middle" font-size="10.5" fill="#8a7660">INTEREST</text>
+        </svg>
+        <ul class="legend">
+          <li><span><i class="dot" style="background:#b07d2b"></i>Principal — you borrowed this</span><b class="num" id="legPrin">&#8377;15,00,000</b></li>
+          <li><span><i class="dot" style="background:#c05b2e"></i>Interest — the bank's cut</span><b class="num" id="legInt">&#8377;8,29,156</b></li>
+          <li><span><i class="dot" style="background:#d9a441"></i>Total repaid</span><b class="num" id="legTot">&#8377;23,29,156</b></li>
+        </ul>
+      </div>
+      <p class="small muted" style="margin-top:16px" id="donutNote">For every &#8377;100 you repay, &#8377;36 goes to the bank as interest and only &#8377;64 pays down what you borrowed.</p>
+    </div>
+    <div class="card" style="padding:22px">
+      <h3 style="font-size:19px;margin-bottom:4px">Year by year: interest vs principal</h3>
+      <p class="tiny" style="margin-bottom:10px">Each bar is one year. Terracotta is interest, bronze is principal.</p>
+      <canvas class="chart" id="amortChart" height="210" aria-label="Yearly principal and interest chart"></canvas>
+      <div style="display:flex;gap:18px;margin-top:8px;font-size:12.5px;color:var(--ink2)">
+        <span><i class="dot" style="background:#c05b2e"></i>Interest paid</span>
+        <span><i class="dot" style="background:#b07d2b"></i>Principal paid</span>
+      </div>
+    </div>
+  </div>
+</section>
 <!-- @@NEXT@@ -->
