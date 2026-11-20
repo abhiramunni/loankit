@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoanKit — Borrow Smart. Know the Real Cost.</title>
+<meta name="description" content="EMI calculator, amortisation, prepayment simulator and loan comparison — in plain words, on your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf5ec; --paper2:#f3ead8; --card:#fffdf7; --ink:#2b1d12; --ink2:#5c4a36; --ink3:#8a7660;
+  --line:#e7dcc4; --bronze:#b07d2b; --gold:#d9a441; --terra:#c05b2e; --terra-soft:#f6e3d3;
+  --green:#4a7a3f; --green-soft:#e4ecdd; --red:#a83c22; --red-soft:#fbe4dc;
+  --shadow:0 10px 30px rgba(43,29,18,.08); --r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.12}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+a{color:var(--bronze)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+.muted{color:var(--ink2)} .small{font-size:13px} .tiny{font-size:12px;color:var(--ink3)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.02em}
+.pill.gold{background:#f7e8c8;color:#7a5510}.pill.green{background:var(--green-soft);color:var(--green)}
+.pill.red{background:var(--red-soft);color:var(--red)}.pill.terra{background:var(--terra-soft);color:var(--terra)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 20px;font-weight:700;font-size:15px;transition:transform .15s,box-shadow .15s}
+.btn:active{transform:scale(.97)}
+.btn.bronze{background:linear-gradient(135deg,#c08a2e,#a06e1d);color:#fff;box-shadow:0 6px 16px rgba(176,125,43,.35)}
+.btn.terra{background:var(--terra);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.small{padding:8px 14px;font-size:13px;border-radius:10px}
+section{padding:34px 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.sec-head h2{font-size:30px}
+.sec-head p{color:var(--ink2);font-size:14px;max-width:520px}
+.num{font-variant-numeric:tabular-nums}
+/* ---------- intro ---------- */
+#intro{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 100% at 50% 0%,#3a2a18 0%,#241a0e 55%,#1a120a 100%);color:#f7ead0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .6s,visibility .6s}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+.coin{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4cd6d,#c08a2e 60%,#8a5f16);display:flex;align-items:center;justify-content:center;font-family:Fraunces,serif;font-size:46px;font-weight:700;color:#2b1d12;box-shadow:0 0 0 6px rgba(217,164,65,.25),0 18px 40px rgba(0,0,0,.5);animation:coinIn .9s cubic-bezier(.2,.9,.3,1.2) both,coinFloat 3.2s ease-in-out 1s infinite}
+@keyframes coinIn{from{transform:scale(.4) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes coinFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+#intro h1{font-size:clamp(38px,8vw,58px);margin:22px 0 8px;animation:fadeUp .8s .25s both}
+#intro .tag{font-size:17px;color:#e8d5a8;max-width:440px;animation:fadeUp .8s .45s both}
+@keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+#intro .bar{width:min(280px,70vw);height:4px;background:rgba(247,234,208,.2);border-radius:99px;margin-top:34px;overflow:hidden;animation:fadeUp .8s .6s both}
+#intro .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a441,#f4cd6d);border-radius:99px;animation:fill 3.6s .3s ease forwards}
+@keyframes fill{to{width:100%}}
+#intro .skip{position:absolute;bottom:26px;right:26px;background:rgba(247,234,208,.12);border:1px solid rgba(247,234,208,.35);color:#f7ead0;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600}
+#intro .skip:hover{background:rgba(247,234,208,.22)}
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:60;background:rgba(250,245,236,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.head-in{display:flex;align-items:center;gap:14px;padding:12px 20px;max-width:1060px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:Fraunces,serif;font-size:22px;font-weight:700;text-decoration:none;color:var(--ink)}
+.brand .mark{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4cd6d,#b07d2b 65%);display:flex;align-items:center;justify-content:center;color:#2b1d12;font-size:19px;box-shadow:0 3px 10px rgba(176,125,43,.4)}
+.brand small{font-family:Inter,sans-serif;font-size:10px;letter-spacing:.22em;color:var(--ink3);display:block;font-weight:700}
+nav{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap}
+nav a{padding:8px 11px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink2);text-decoration:none}
+nav a:hover{background:var(--paper2);color:var(--ink)}
+/* ---------- hero ---------- */
+.hero{position:relative;padding:0 0 30px}
+.hero-photo{position:relative;height:400px;overflow:hidden;border-radius:0 0 26px 26px}
+.hero-photo img{width:100%;height:100%;object-fit:cover;animation:kb 24s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1) translateY(0)}to{transform:scale(1.12) translateY(-12px)}}
+.hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,18,10,.05) 40%,rgba(26,18,10,.72))}
+.hero-copy{position:absolute;left:0;right:0;bottom:0;padding:0 20px 26px;max-width:1060px;margin:0 auto;color:#fdf6e7;z-index:2}
+.hero-copy h1{font-size:clamp(34px,6vw,54px);text-shadow:0 2px 18px rgba(0,0,0,.4)}
+.hero-copy p{margin-top:8px;font-size:16.5px;color:#f3e5c8;max-width:560px;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+.emi-dial{margin:-64px auto 0;position:relative;z-index:3;padding:26px 26px 22px}
+.emi-top{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.emi-big{flex:1;min-width:240px}
+.emi-big .lbl{font-size:12px;letter-spacing:.18em;font-weight:800;color:var(--ink3)}
+.emi-big .val{font-family:Fraunces,serif;font-size:clamp(40px,7vw,56px);font-weight:700;line-height:1.05}
+.emi-big .val span{font-size:20px;color:var(--ink2);font-weight:600}
+.emi-big .sub{margin-top:6px;color:var(--ink2);font-size:14px}
+.ring-wrap{width:150px;height:150px;flex:none;position:relative}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring-c b{font-size:21px}
+.ring-c span{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.06em}
+.emi-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.chip.on{background:var(--ink);color:#f7ead0;border-color:var(--ink)}
+.chip:hover{border-color:var(--bronze)}
+.emi-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.stat .k{font-size:11.5px;letter-spacing:.1em;font-weight:800;color:var(--ink3);text-transform:uppercase}
+.stat .v{font-size:19px;font-weight:800;margin-top:3px}
+.stat .d{font-size:12.5px;color:var(--ink2)}
+/* @@NEXT@@ */
+</style>
+</head>
+<body>
