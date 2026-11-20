@@ -192,4 +192,58 @@ footer{padding:26px 0 46px}
   <div class="bar"><i></i></div>
   <button class="skip" id="introSkip" type="button">Skip intro &rsaquo;</button>
 </div>
+<header>
+  <div class="head-in">
+    <a class="brand" href="#"><span class="mark">&#8377;</span><span>LoanKit<small>BORROW SMART</small></span></a>
+    <nav>
+      <a href="#calculator">Calculator</a>
+      <a href="#breakdown">Breakdown</a>
+      <a href="#prepay">Prepay</a>
+      <a href="#compare">Compare</a>
+      <a href="#afford">Affordability</a>
+      <a href="#guides">Guides</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-photo">
+    <img src="{{HERO_IMG}}" alt="Reviewing loan papers at a sunlit desk" onerror="this.style.display='none'">
+    <div class="hero-copy wrap">
+      <h1>The EMI is not the price.<br>The interest is.</h1>
+      <p>A ₹15 lakh education loan at 9.5% costs ₹8.3 lakh in interest alone. See the full picture before you sign anything.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="card emi-dial reveal">
+      <div class="emi-top">
+        <div class="emi-big">
+          <div class="lbl">YOUR MONTHLY EMI</div>
+          <div class="val num" id="heroEmi">&#8377;19,410<span> / month</span></div>
+          <div class="sub" id="heroSub">₹15,00,000 &middot; 9.5% reducing &middot; 10 years &middot; first EMI Jan 2027</div>
+        </div>
+        <div class="ring-wrap" aria-label="Interest share of total payment">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="62" fill="none" stroke="#eadfc6" stroke-width="15"/>
+            <circle id="ringFg" cx="75" cy="75" r="62" fill="none" stroke="#c05b2e" stroke-width="15" stroke-linecap="round" stroke-dasharray="389.5" stroke-dashoffset="250"/>
+          </svg>
+          <div class="ring-c"><b id="ringPct">36%</b><span>OF WHAT YOU PAY<br>IS INTEREST</span></div>
+        </div>
+      </div>
+      <div class="emi-chips" id="typeChips" role="group" aria-label="Loan type presets">
+        <button type="button" class="chip on" data-type="education">Education loan</button>
+        <button type="button" class="chip" data-type="home">Home loan</button>
+        <button type="button" class="chip" data-type="car">Car loan</button>
+        <button type="button" class="chip" data-type="personal">Personal loan</button>
+      </div>
+      <div class="emi-stats">
+        <div class="stat"><div class="k">Total you pay</div><div class="v num" id="statTotal">&#8377;23,29,156</div><div class="d">principal + interest</div></div>
+        <div class="stat"><div class="k">Interest alone</div><div class="v num" id="statInterest">&#8377;8,29,156</div><div class="d">money that buys you nothing</div></div>
+        <div class="stat"><div class="k">Last EMI</div><div class="v num" id="statPayoff">Dec 2036</div><div class="d">debt-free date</div></div>
+        <div class="stat"><div class="k">Interest share</div><div class="v num" id="statShare">36%</div><div class="d">of every rupee you repay</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 <!-- @@NEXT@@ -->
