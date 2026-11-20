@@ -93,7 +93,103 @@ nav a:hover{background:var(--paper2);color:var(--ink)}
 .stat .k{font-size:11.5px;letter-spacing:.1em;font-weight:800;color:var(--ink3);text-transform:uppercase}
 .stat .v{font-size:19px;font-weight:800;margin-top:3px}
 .stat .d{font-size:12.5px;color:var(--ink2)}
-/* @@NEXT@@ */
+/* ---------- sliders & calculator ---------- */
+.calc-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
+.slider-row{padding:16px 0;border-bottom:1px solid var(--line)}
+.slider-row:last-child{border-bottom:0}
+.slider-row .lab{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:14.5px}
+.slider-row .lab output{font-family:Fraunces,serif;font-size:21px;color:var(--terra)}
+.slider-row .hint{font-size:12.5px;color:var(--ink3);margin-top:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--gold) var(--fill,50%),#eadfc6 var(--fill,50%));margin-top:12px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fffdf7;border:3px solid var(--bronze);box-shadow:0 3px 10px rgba(43,29,18,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fffdf7;border:3px solid var(--bronze);cursor:pointer}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;background:#fff;font-size:15px;color:var(--ink)}
+.field input:focus,.field select:focus{outline:2px solid var(--gold);border-color:var(--bronze)}
+.verdict-line{margin-top:14px;padding:13px 15px;border-radius:12px;background:var(--paper2);font-size:14px}
+/* ---------- donut / chart / table ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.donut-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.legend{list-style:none;flex:1;min-width:200px}
+.legend li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.legend li:last-child{border-bottom:0}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:8px;vertical-align:1px}
+canvas.chart{width:100%;height:210px;display:block}
+table.ledger{width:100%;border-collapse:collapse;font-size:14px}
+table.ledger th{text-align:left;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);padding:10px 8px;border-bottom:2px solid var(--line)}
+table.ledger td{padding:10px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+table.ledger td.r,table.ledger th.r{text-align:right}
+table.ledger tr:last-child td{border-bottom:0}
+.bar-track{height:12px;border-radius:99px;background:#eadfc6;overflow:hidden;display:flex}
+.bar-track i{display:block;height:100%}
+/* ---------- prepay / compare / afford ---------- */
+.prepay-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.big-num{font-family:Fraunces,serif;font-size:30px;font-weight:700}
+.scn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.scn{padding:20px;position:relative}
+.scn.best{border:2px solid var(--gold)}
+.scn h3{font-size:19px}
+.scn .emi{font-family:Fraunces,serif;font-size:31px;font-weight:700;margin:8px 0 2px}
+.scn ul{list-style:none;margin-top:12px;font-size:13.5px;color:var(--ink2)}
+.scn ul li{padding:5px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:8px}
+.scn ul li:last-child{border-bottom:0}
+.gauge-wrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.check-list{list-style:none}
+.check-list li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.check-list li:last-child{border-bottom:0}
+.check-box{width:24px;height:24px;flex:none;border-radius:8px;border:2px solid var(--bronze);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;margin-top:1px}
+.check-list li.done .check-box{background:var(--green);border-color:var(--green)}
+.check-list li.done .ct{color:var(--ink3);text-decoration:line-through}
+.rate-table{width:100%;border-collapse:collapse;font-size:14px}
+.rate-table th{text-align:left;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);padding:9px 8px;border-bottom:2px solid var(--line)}
+.rate-table td{padding:9px 8px;border-bottom:1px solid var(--line)}
+/* ---------- guides / footer ---------- */
+.guide{border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:10px;overflow:hidden}
+.guide summary{cursor:pointer;padding:16px 18px;font-weight:700;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary .chev{transition:transform .25s;color:var(--bronze);font-size:18px}
+.guide[open ] summary .chev{transform:rotate(90deg)}
+.guide .g-body{padding:0 18px 16px;color:var(--ink2);font-size:14.5px}
+.guide .g-body b{color:var(--ink)}
+footer{padding:26px 0 46px}
+.foot-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.danger{color:var(--red);font-weight:700;background:none;border:0;padding:0;font-size:14px;text-decoration:underline}
+/* ---------- coach / toast / drawer ---------- */
+#coach{position:fixed;inset:0;z-index:150;background:rgba(26,18,10,.55);display:none;align-items:flex-end;justify-content:center;padding:18px}
+#coach.show{display:flex}
+.coach-card{background:var(--card);border-radius:20px;max-width:480px;width:100%;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.35);animation:fadeUp .35s both}
+.coach-card .step{font-size:12px;letter-spacing:.16em;font-weight:800;color:var(--bronze)}
+.coach-card h3{font-size:24px;margin:8px 0}
+.coach-card p{color:var(--ink2);font-size:15px}
+.coach-dots{display:flex;gap:6px;margin:16px 0}
+.coach-dots i{width:26px;height:5px;border-radius:99px;background:#e7dcc4}
+.coach-dots i.on{background:var(--bronze)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);z-index:180;background:var(--ink);color:#f7ead0;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:all .35s;pointer-events:none;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:860px){
+  .calc-grid,.split,.foot-grid{grid-template-columns:1fr}
+  .scn-grid{grid-template-columns:1fr}
+  .emi-stats{grid-template-columns:repeat(2,1fr)}
+  .prepay-nums{grid-template-columns:1fr}
+  nav{display:none}
+  .hero-photo{height:330px}
+  .sec-head{flex-direction:column;align-items:flex-start}
+  .sec-head h2{font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01s !important;transition-duration:.01s !important}
+}
 </style>
 </head>
 <body>
+<div id="intro" role="dialog" aria-label="Welcome">
+  <div class="coin">&#8377;</div>
+  <h1>LoanKit</h1>
+  <p class="tag">Borrow smart. Know the real cost before you sign.</p>
+  <div class="bar"><i></i></div>
+  <button class="skip" id="introSkip" type="button">Skip intro &rsaquo;</button>
+</div>
+<!-- @@NEXT@@ -->
