@@ -553,4 +553,170 @@ function toast(msg){
   t.textContent=msg; t.classList.add("show");
   setTimeout(function(){ t.classList.remove("show"); },2600);
 }
+/* ---------- renderers ---------- */
+function cur(){ return state.loan; }
+function renderAll(){
+  var L=cur(), months=L.years*12, e=emi(L.amount,L.rate,months);
+  var sched=amortise(L.amount,L.rate,months,0);
+  var total=sched.totalPaid, interest=sched.totalInterest;
+  var pct=total>0?Math.round(interest/total*100):0;
+  /* hero */
+  $("heroEmi").innerHTML=inr(e)+"<span> / month</span>";
+  $("heroSub").textContent=inr(L.amount)+" \u00B7 "+L.rate+"% reducing \u00B7 "+L.years+" years \u00B7 first EMI "+addMonths(L.start,0);
+  $("ringFg").setAttribute("stroke-dashoffset",(389.5*(1-pct/100)).toFixed(1));
+  $("ringPct").textContent=pct+"%";
+  $("statTotal").textContent=inr(total);
+  $("statInterest").textContent=inr(interest);
+  $("statPayoff").textContent=addMonths(L.start,months-1);
+  $("statShare").textContent=pct+"%";
+  /* calculator */
+  $("amtOut").textContent=inr(L.amount);
+  $("rateOut").textContent=L.rate+"%";
+  $("yrsOut").textContent=L.years+" year"+(L.years>1?"s":"");
+  setFill($("amtRange"),L.amount,100000,5000000);
+  setFill($("rateRange"),L.rate,6,18);
+  setFill($("yrsRange"),L.years,1,30);
+  var lowRate=amortise(L.amount,Math.max(0.1,L.rate-1),months,0);
+  $("rateSave").textContent=inr(Math.max(0,interest-lowRate.totalInterest));
+  /* affordability verdict in calculator */
+  var pctInc=state.income>0?e/state.income*100:0;
+  $("calcVerdict").innerHTML="This EMI is <b>"+Math.round(pctInc)+"% of a "+inr(state.income)+" income</b> \u2014 "+(pctInc<=30?"comfortable.":pctInc<=40?"tight, but workable.":"above the 40% line banks prefer.")+" Banks usually want all your EMIs under 40\u201350% of income.";
+  /* donut */
+  var C=414.7;
+  $("donutInt").setAttribute("stroke-dasharray",(C*pct/100).toFixed(1)+" "+C.toFixed(1));
+  $("donutPct").textContent=pct+"%";
+  $("legPrin").textContent=inr(L.amount);
+  $("legInt").textContent=inr(interest);
+  $("legTot").textContent=inr(total);
+  $("donutNote").textContent="For every \u20B9100 you repay, \u20B9"+pct+" goes to the bank as interest and only \u20B9"+(100-pct)+" pays down what you borrowed.";
+  renderChart(sched.years);
+  renderTable(sched.years);
+  renderPrepay(L,months,e,sched);
+  renderCompare();
+  renderAfford(e);
+  renderDocs();
+}
+function setFill(el,val,min,max){
+  var p=((val-min)/(max-min))*100;
+  el.style.setProperty("--fill",p+"%");
+}
+function renderChart(years){
+  var cv=$("amortChart"); if(!cv) return;
+  var ctx=cv.getContext?cv.getContext("2d"):null; if(!ctx) return;
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||640, H=210;
+  cv.width=W*dpr; cv.height=H*dpr; ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var max=0; years.forEach(function(y){ max=Math.max(max,y.int+y.prin); });
+  if(!max) return;
+  var n=years.length, gap=6, bw=Math.max(8,(W-gap*(n+1))/n);
+  years.forEach(function(y,i){
+    var x=gap+i*(bw+gap), ih=y.int/max*(H-34), ph=y.prin/max*(H-34);
+    ctx.fillStyle="#c05b2e"; ctx.fillRect(x,H-24-ih,bw,ih);
+    ctx.fillStyle="#b07d2b"; ctx.fillRect(x,H-24-ih-ph,bw,ph);
+    ctx.fillStyle="#8a7660"; ctx.font="10px Inter,sans-serif"; ctx.textAlign="center";
+    if(n<=15||i%2===0) ctx.fillText("Y"+y.year,x+bw/2,H-8);
+  });
+}
+function renderTable(years){
+  var tb=$("amortBody"); if(!tb) return;
+  var rows=state.showAllYears?years:years.slice(0,5);
+  tb.innerHTML=rows.map(function(y){
+    return "<tr><td>Year "+y.year+"</td><td class=\"r\">"+inr(y.paid)+"</td><td class=\"r\">"+inr(y.prin)+"</td><td class=\"r\">"+inr(y.int)+"</td><td class=\"r\"><b>"+inr(y.bal)+"</b></td></tr>";
+  }).join("");
+  $("toggleYears").textContent=state.showAllYears?"Show first 5 years":"Show all "+years.length+" years";
+}
+function renderPrepay(L,months,e,sched){
+  var ex=state.extra;
+  $("extraOut").textContent=inr(ex);
+  setFill($("extraRange"),ex,0,20000);
+  var pp=amortise(L.amount,L.rate,months,ex);
+  var savedMonths=months-pp.months, savedInt=sched.totalInterest-pp.totalInterest;
+  $("ppMonths").textContent=savedMonths>0?savedMonths+" months early":"No change yet";
+  $("ppDate").textContent=savedMonths>0?addMonths(L.start,pp.months-1)+" instead of "+addMonths(L.start,months-1):"Raise the slider to see the magic";
+  $("ppSave").textContent=inr(Math.max(0,savedInt));
+  $("ppTenure").textContent=fmtMonths(pp.months);
+  $("ppEmiNote").textContent="EMI stays "+inr(e)+" + "+inr(ex)+" extra";
+  $("ppOld").textContent=inr(sched.totalInterest);
+  $("ppNew").textContent=inr(pp.totalInterest);
+  var w=sched.totalInterest>0?Math.max(4,pp.totalInterest/sched.totalInterest*100):100;
+  $("ppBar").style.width=w.toFixed(0)+"%";
+}
+function renderCompare(){
+  var grid=$("scnGrid"); if(!grid) return;
+  var best=null;
+  state.scenarios.forEach(function(s){
+    var it=amortise(s.amount,s.rate,s.years*12,0).totalInterest;
+    s._emi=emi(s.amount,s.rate,s.years*12); s._int=it; s._tot=s.amount+it;
+    s._perLakh=it/(s.amount/100000);
+    if(!best||s.rate<best.rate) best=s; /* lowest rate — total interest is meaningless across different loan sizes */
+  });
+  grid.innerHTML=state.scenarios.map(function(s){
+    return '<article class="card scn'+(s===best?' best':'')+'">'+
+      (s===best?'<span class="pill gold" style="position:absolute;top:-11px;right:14px">LOWEST RATE</span>':'')+
+      '<h3>'+esc(s.name)+'</h3>'+
+      '<div class="emi num">'+inr(s._emi)+'<span style="font-size:14px;color:var(--ink2)"> / mo</span></div>'+
+      '<ul><li><span>Amount</span><b>'+inr(s.amount)+'</b></li>'+
+      '<li><span>Rate</span><b>'+s.rate+'% / yr</b></li>'+
+      '<li><span>Tenure</span><b>'+s.years+' years</b></li>'+
+      '<li><span>Interest paid</span><b>'+inr(s._int)+'</b></li>'+
+      '<li><span>Interest per &#8377;1 lakh</span><b>'+inr(s._perLakh)+'</b></li>'+
+      '<li><span>Total repaid</span><b>'+inr(s._tot)+'</b></li></ul>'+
+      '<div style="display:flex;gap:8px;margin-top:14px"><button type="button" class="btn ghost small" data-use="'+s.id+'">Use this loan</button>'+
+      '<button type="button" class="btn ghost small" data-del="'+s.id+'">Remove</button></div>'+
+      (s.sample?'<div class="tiny" style="margin-top:10px">Sample — tap Remove samples below to clear</div>':'')+
+      '</article>';
+  }).join("");
+  grid.querySelectorAll("[data-use]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var s=state.scenarios.find(function(x){return x.id===b.getAttribute("data-use");});
+      if(!s) return;
+      state.loan={amount:s.amount,rate:s.rate,years:s.years,start:state.loan.start};
+      syncInputs(); save(); renderAll();
+      safeScroll($("calculator")); toast("Calculator updated to "+s.name);
+    });
+  });
+  grid.querySelectorAll("[data-del]").forEach(function(b){
+    b.addEventListener("click",function(){
+      state.scenarios=state.scenarios.filter(function(x){return x.id!==b.getAttribute("data-del");});
+      save(); renderCompare(); toast("Scenario removed");
+    });
+  });
+}
+function renderAfford(e){
+  var inc=state.income||0;
+  var pct=inc>0?e/inc*100:0;
+  var max=inc*0.4, head=max-e;
+  $("gaugePct").textContent=Math.round(pct)+"%";
+  var arc=251.3, off=arc*(1-Math.min(100,pct)/100);
+  var g=$("gaugeArc");
+  g.setAttribute("stroke-dashoffset",off.toFixed(1));
+  g.setAttribute("stroke",pct<=30?"#4a7a3f":pct<=40?"#d9a441":"#a83c22");
+  var title, text;
+  if(pct<=30){ title="Comfortable \u2014 with room to breathe"; }
+  else if(pct<=40){ title="Tight \u2014 doable, but watch it"; }
+  else { title="Too much \u2014 this EMI stretches you"; }
+  text="Your EMI of "+inr(e)+" is "+Math.round(pct)+"% of a "+inr(inc)+" income. That leaves "+inr(Math.max(0,inc-e))+" a month for everything else"+(head>=0?", and about "+inr(head)+" of headroom before you hit the 40% line.":". You are "+inr(-head)+" over the 40% line \u2014 a shorter tenure or a smaller loan would help.");
+  $("affordTitle").textContent=title;
+  $("affordText").textContent=text;
+  $("affordMax").textContent="Max EMI at 40%: "+inr(max);
+  $("affordHead").textContent=head>=0?"Headroom: "+inr(head)+" / month":"Over the line by "+inr(-head)+" / month";
+  $("affordHead").className="pill "+(head>=0?"green":"red");
+}
+function renderDocs(){
+  var list=$("docList"); if(!list) return;
+  var done=DOCS.filter(function(_,i){return state.docs[i];}).length;
+  $("docCount").textContent=done+" of "+DOCS.length+" ready";
+  list.innerHTML=DOCS.map(function(d,i){
+    var on=!!state.docs[i];
+    return '<li class="'+(on?'done':'')+'" data-doc="'+i+'"><span class="check-box">'+(on?"\u2713":"")+'</span><span class="ct">'+d+'</span></li>';
+  }).join("");
+  list.querySelectorAll("li").forEach(function(li){
+    li.addEventListener("click",function(){
+      var i=+li.getAttribute("data-doc");
+      state.docs[i]=!state.docs[i]; save(); renderDocs();
+    });
+  });
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 /* @@NEXT@@ */
